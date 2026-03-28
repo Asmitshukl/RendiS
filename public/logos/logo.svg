@@ -1,1 +1,63 @@
-<svg id="logo-38" width="78" height="32" viewBox="0 0 78 32" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M55.5 0H77.5L58.5 32H36.5L55.5 0Z" class="ccustom" fill="#FF7A00"></path> <path d="M35.5 0H51.5L32.5 32H16.5L35.5 0Z" class="ccompli1" fill="#FF9736"></path> <path d="M19.5 0H31.5L12.5 32H0.5L19.5 0Z" class="ccompli2" fill="#FFBC7D"></path> </svg>
+<svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" width="160" height="120">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed"/>
+      <stop offset="100%" style="stop-color:#06b6d4"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="160" height="120" fill="white"/>
+
+  <!--
+    Signature-style RS monogram drawn with thick flowing strokes.
+    All paths use stroke only — like a real pen signature.
+  -->
+
+  <!-- R — flowing cursive style -->
+  <path
+    d="M 28 85
+       C 28 85, 25 30, 28 25
+       C 32 18, 55 18, 58 30
+       C 62 44, 50 52, 35 55
+       C 48 58, 62 75, 72 90"
+    fill="none"
+    stroke="url(#g1)"
+    stroke-width="7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Connecting flow from R into S -->
+  <path
+    d="M 72 90
+       C 78 96, 85 100, 90 95"
+    fill="none"
+    stroke="url(#g1)"
+    stroke-width="7"
+    stroke-linecap="round"
+  />
+
+  <!-- S — fluid cursive -->
+  <path
+    d="M 108 32
+       C 100 22, 82 22, 82 38
+       C 82 52, 108 52, 108 68
+       C 108 84, 88 88, 80 78"
+    fill="none"
+    stroke="url(#g1)"
+    stroke-width="7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Underline flourish — signature finishing stroke -->
+  <path
+    d="M 22 98 C 50 108, 100 108, 120 98"
+    fill="none"
+    stroke="url(#g1)"
+    stroke-width="3"
+    stroke-linecap="round"
+    opacity="0.45"
+  />
+
+</svg>
