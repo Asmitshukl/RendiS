@@ -1,34 +1,45 @@
-// src/inngest/functions.ts
 import prisma from "@/lib/db";
 import { inngest } from "./client";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { generateText } from "ai";
+import  { createOpenAI} from "@ai-sdk/openai" 
+import  { createAnthropic } from "@ai-sdk/anthropic"
+ 
+const google = createGoogleGenerativeAI();
+const openai=createOpenAI();
+const anthropic=createAnthropic();
 
-export const processTask = inngest.createFunction(
-  { id: "process-task", triggers: { event: "app/task.created" } },
+export const execute = inngest.createFunction(
+  { id: "execute-ai", triggers: { event: "execute/ai" } },
   async ({ event, step }) => {
-    const result = await step.run("handle-task", async () => {
-      return { processed: true, id: event.data.id };
-    });
+    const { steps :geminiSteps } =await step.ai.wrap("gemini-generate-text",
+      generateText, {
+        model:google("gemini-2.5-flash"),
+        system: "you are a helpful assistant",
+        prompt: "what is 2+2"
+      }
+    );
 
-    //now here are three tasks queued one after another now suppose if any one fails what we 
-    //can do is put them retry and it would get execued again if we want we can restart again
-    //all the task but hte user would not wait until all the tasks get completed
-    //and this is the benefit of using { inngest }
-    //fetching
-    await step.sleep("fetching", "3s");
+    const { steps : openAiSteps } =await step.ai.wrap("openai-generate-text",
+      generateText, {
+        model:openai("gpt-4.1"),
+        system: "you are a helpful assistant",
+        prompt: "what is 2+2"
+      }
+    );
 
-    //transcribing
-    await step.sleep("transcribing", "3s");
+    const { steps : anthropicSteps } =await step.ai.wrap("anthropic-generate-text",
+      generateText, {
+        model:anthropic("claude-sonnet-4-0"),
+        system: "you are a helpful assistant",
+        prompt: "what is 2+2"
+      }
+    );
 
-    //sending
-    await step.sleep("sending-to-g", "3s");
-
-
-    await step.run("create-workflow",()=>{
-        return prisma.worklow.create({
-            data:{
-                name:"workflow-from-inngest"
-            }
-        })
-    })
+    return {
+      geminiSteps,
+      openAiSteps,
+      anthropicSteps
+    }
   }
 );

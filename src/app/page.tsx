@@ -5,6 +5,7 @@ import { LogoutButton } from "./logout";
 import { useTRPC } from "@/trpc/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
  const Page=  ()=>{
   // await requireAuth();
@@ -13,6 +14,12 @@ import { Button } from "@/components/ui/button";
   const trpc = useTRPC();
   const queryClient=useQueryClient();
   const { data } = useQuery(trpc.getWorkFlows.queryOptions());
+
+  const testAi = useMutation(trpc.testAi.mutationOptions({
+    onSuccess:()=>{
+      toast.success("Ai job queued ");
+    }
+  }));
 
   const create = useMutation(trpc.createWorkflow.mutationOptions({
     onSuccess : ()=>{
@@ -25,6 +32,7 @@ import { Button } from "@/components/ui/button";
     <div className={"text-red-500 min-h-screen min-w-screen flex items-center justify-center flex-col gap-y-6"}>
       protected server component
       {JSON.stringify(data)};
+      <Button disabled={testAi.isPending} onClick={()=> testAi.mutate()}>Test AI</Button>
       <Button disabled={create.isPending} onClick={()=> create.mutate()}>
         Create Workflow
       </Button>
