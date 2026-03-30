@@ -21,7 +21,7 @@ export const useCreateWorkflow = () =>{
 
     return useMutation(trpc.worflows.create.mutationOptions({
         onSuccess:(data)=>{
-            toast.success(`Workflow ${data.name} created`);
+            toast.success(`Workflow "${data.name}" created`);
             queryClient.invalidateQueries(
                 trpc.worflows.getMany.queryOptions({}),
             );
@@ -31,4 +31,22 @@ export const useCreateWorkflow = () =>{
         },
     }),
 )
+};
+
+//hook to remove a workflow
+export const useRemoveWorkflow= () => {
+    const trpc = useTRPC();
+    const queryClient = useQueryClient();
+
+    return useMutation(
+        trpc.worflows.remove.mutationOptions({
+            onSuccess:(data)=>{
+                toast.success(`Workflow "${data.name}" removed`);
+                queryClient.invalidateQueries(trpc.worflows.getMany.queryOptions({}));
+                queryClient.invalidateQueries(
+                    trpc.worflows.getOne.queryFilter({id:data.id}),
+                )
+            }
+        })
+    )
 }
