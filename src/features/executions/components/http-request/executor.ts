@@ -1,11 +1,20 @@
 import type { NodeExecutor } from "@/features/executions/types";
 import { NonRetriableError } from "inngest";
 import ky, { type Options as Kyoptions } from "ky"
+import Handlebars from "handlebars";
+
+Handlebars.registerHelper("json",(context) =>{
+    const stringified = JSON.stringify(context , null ,2);
+    const safeString = new Handlebars.SafeString(stringified);
+
+    return safeString;
+});
+
 
 type HttpRequestData =  {
-    variableName?: string;
-    endpoint?: string;
-    method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+    variableName: string;
+    endpoint: string;
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
     body?: string;
 }
 
@@ -24,15 +33,20 @@ export const HttpRequestExecutor : NodeExecutor<HttpRequestData> = async ({
         throw new NonRetriableError("variableName not configured");
     }
 
+    if(!data.method){
+        throw new NonRetriableError("method not configured");
+    }
 
     const result = await step.run("http-request",async () =>{
-        const endpoint = data.endpoint! ;
-        const method = data.method || "GET"
+        const endpoint = Handlebars.compile(data.endpoint)(context)
+        const method = data.method ;
 
         const options: Kyoptions = {method};
 
         if(["POST" , "PUT" , "PATCH"].includes(method)){
-                options.body = data.body;
+                const resolved = Handlebars.compile(data.body || "{}")(context);
+                JSON.parse(resolved);
+                options.body = resolved;
                 options.headers ={
                     "Content-Type":"application/json",
                 };
@@ -50,18 +64,11 @@ export const HttpRequestExecutor : NodeExecutor<HttpRequestData> = async ({
             },
         };
 
-        if(data.variableName){
         return {
             ...context,
             [data.variableName]:responsePayload,
         }
-        }
-
-        //fallback to direct httpresponse for backward compatibility
-        return {
-            ...context,
-            ...responsePayload,
-        }
+        
     } );
 
     //now i did this because in the lecture he did no hve to write nything like thsi but got a finalization 
