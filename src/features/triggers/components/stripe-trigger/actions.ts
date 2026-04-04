@@ -1,0 +1,18 @@
+"use server";
+
+import { getSubscriptionToken , type Realtime } from "@inngest/realtime";
+import { stripeTriggerChannel } from "@/inngest/channels/stripe-trigger";
+import { inngest } from "@/inngest/client";
+
+export type stripeTriggerToken = Realtime.Token<
+    typeof stripeTriggerChannel,
+    ["status"]
+>;
+
+export async function fetchStripeTriggerRealTimeToken(): Promise<stripeTriggerToken>{
+    const token = await getSubscriptionToken(inngest , {
+        channel: stripeTriggerChannel(),
+        topics: ["status"],
+    });
+    return token;
+}
