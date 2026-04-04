@@ -5,6 +5,9 @@ import { GlobeIcon } from "lucide-react";
 import { memo, useState  } from "react";
 import { BaseExecutionNode } from "../base-execution-node";
 import { HttpRequestDialog, HttpRequestFormValues } from "./dialog";
+import { useNodeStatus } from "../../hooks/use-node-status";
+import { fetchHttpRequestRealTimeToken } from "./actions";
+import { HTTP_REQUEST_CHANNEL_NAME } from "@/inngest/channels/http-request";
 
 type HttpRequestNodeData = {
     variableName?:string;
@@ -23,7 +26,12 @@ export const HttpRequestNode = memo((props : NodeProps<HttpRequestNodeType>)=>{
                             ? `${nodeData.method || "GET"} : ${nodeData.endpoint}` 
                             : "Not COnfigured" ;
 
-    const nodeStatus = "initial";
+    const nodeStatus = useNodeStatus({
+        nodeId : props.id ,
+        channel : HTTP_REQUEST_CHANNEL_NAME,
+        topic: "status",
+        refreshToken: fetchHttpRequestRealTimeToken
+    });
 
     const handleSubmit= (values : HttpRequestFormValues )=>{
         setNodes((nodes)=>nodes.map((node)=>{
