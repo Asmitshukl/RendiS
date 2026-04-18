@@ -40,6 +40,17 @@ export const executeWorkflow = inngest.createFunction(
 
     });
 
+    const userId = await step.run("find-user-id",async()=>{
+      const workflow = await prisma.worklow.findUniqueOrThrow({
+        where:{ id :workflowId },
+        select:{
+          userId:true
+        }
+      });
+
+      return workflow.userId;
+    })
+
     //intilize the context with 
     let context = event.data.initialData || {};
 
@@ -50,6 +61,7 @@ export const executeWorkflow = inngest.createFunction(
         data:node.data as Record<string,unknown>,
         nodeId : node.id,
         context,
+        userId,
         step,
         publish
       })
