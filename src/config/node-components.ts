@@ -8,6 +8,8 @@ import { StripeTriggerNode } from "@/features/triggers/components/stripe-trigger
 import { geminiNode } from "@/features/executions/components/gemini/node";
 import { OpenAiNode } from "@/features/executions/components/openai/node";
 import { AnthropicNode } from "@/features/executions/components/anthropic/node";
+import { DiscordNode } from "@/features/executions/components/discord/node";
+import { SlackNode } from "@/features/executions/components/slack/node";
 
 
 export const nodeComponents = {
@@ -18,7 +20,9 @@ export const nodeComponents = {
     [NodeType.STRIPE_TRIGGER] : StripeTriggerNode,
     [NodeType.GEMINI] : geminiNode,
     [NodeType.OPENAI] : OpenAiNode,
-    [NodeType.ANTHROPIC] : AnthropicNode
+    [NodeType.ANTHROPIC] : AnthropicNode,
+    [NodeType.DISCORD] : DiscordNode,
+    [NodeType.SLACK]:SlackNode
     
 } as const satisfies NodeTypes 
 
